@@ -3,24 +3,27 @@ import useCircuitStore, { COMPONENT_DEFS } from '../store/circuitStore'
 import './ComponentNode.css'
 
 function ComponentNode({ comp }) {
-  const { moveComponent, selectComponent, selectedId } = useCircuitStore()
+  const { moveComponent, selectComponent, selectedId, clickPin, pendingPin } = useCircuitStore()
   const def = COMPONENT_DEFS[comp.type]
   const isSelected = selectedId === comp.id
   const dragStart = useRef(null)
+  const hasDragged = useRef(false)
 
-  // เริ่ม drag บน canvas
   const handleMouseDown = useCallback((e) => {
+    // ถ้าคลิกที่ pin ให้ pin จัดการเอง
+    if (e.target.classList.contains('pin')) return
     e.stopPropagation()
+
+    hasDragged.current = false
     selectComponent(comp.id)
 
     const startX = e.clientX - comp.x
     const startY = e.clientY - comp.y
-    dragStart.current = { startX, startY }
 
     const onMouseMove = (e) => {
-      const rawX = e.clientX - dragStart.current.startX
-      const rawY = e.clientY - dragStart.current.startY
-      // snap to grid 20px
+      hasDragged.current = true
+      const rawX = e.clientX - startX
+      const rawY = e.clientY - startY
       const x = Math.round(rawX / 20) * 20
       const y = Math.round(rawY / 20) * 20
       moveComponent(comp.id, Math.max(0, x), Math.max(0, y))
@@ -29,16 +32,24 @@ function ComponentNode({ comp }) {
     const onMouseUp = () => {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
-      dragStart.current = null
     }
 
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
   }, [comp, moveComponent, selectComponent])
 
+  const handlePinClick = useCallback((e, pinIndex) => {
+    e.stopPropagation()
+    clickPin(comp.id, pinIndex)
+  }, [comp.id, clickPin])
+
+  // pin กำลัง pending (pin แรกที่คลิก)
+  const isPinPending = (pinIndex) =>
+    pendingPin && pendingPin.compId === comp.id && pendingPin.pinIndex === pinIndex
+
   return (
     <div
-      className={`comp-node ${isSelected ? 'selected' : ''}`}
+      className={`comp-node ${isSelected ? 'selected' : ''} ${pendingPin ? 'wiring-mode' : ''}`}
       style={{
         left: comp.x,
         top: comp.y,
@@ -47,33 +58,30 @@ function ComponentNode({ comp }) {
       }}
       onMouseDown={handleMouseDown}
     >
-      {/* Pin ซ้าย */}
-      {def.pins[0] && (
+      {/* Pins */}
+      {def.pins.map((pin, i) => (
         <div
-          className="pin pin-left"
-          style={{ top: def.pins[0].y - 4 }}
+          key={i}
+          className={`pin ${i === 0 ? 'pin-left' : 'pin-right'} ${isPinPending(i) ? 'pin-active' : ''}`}
+          style={{
+            left: pin.x === 0 ? -5 : undefined,
+            right: pin.x === def.width ? -5 : undefined,
+            top: pin.y - 5,
+            // pin บน (ground)
+            ...(pin.y === 0 ? { top: -5, left: def.width / 2 - 5 } : {}),
+          }}
+          onClick={(e) => handlePinClick(e, i)}
         />
-      )}
+      ))}
 
-      {/* ตัว component */}
-      <div
-        className="comp-body"
-        style={{ height: def.height }}
-      >
+      {/* Body */}
+      <div className="comp-body" style={{ height: def.height }}>
         <span className="node-icon">{def.icon}</span>
         <div className="node-labels">
           <span className="node-name">{def.label}</span>
           <span className="node-value">{def.value}</span>
         </div>
       </div>
-
-      {/* Pin ขวา (ถ้ามี) */}
-      {def.pins[1] && (
-        <div
-          className="pin pin-right"
-          style={{ top: def.pins[1].y - 4 }}
-        />
-      )}
     </div>
   )
 }

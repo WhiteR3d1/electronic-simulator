@@ -12,6 +12,11 @@
   z-index: 20;
 }
 
+/* ตอนอยู่ใน wiring mode ให้ cursor เปลี่ยน */
+.comp-node.wiring-mode {
+  cursor: default;
+}
+
 .comp-body {
   display: flex;
   align-items: center;
@@ -31,7 +36,7 @@
 }
 
 .comp-node:hover .comp-body {
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .node-icon {
@@ -60,28 +65,34 @@
   white-space: nowrap;
 }
 
-/* Pin dots */
+/* ── Pins ── */
 .pin {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #1c1c28;
-  border: 1.5px solid #444460;
   position: absolute;
-  z-index: 2;
-  transition: border-color 0.15s, transform 0.15s;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0f0f13;
+  border: 2px solid #444460;
+  z-index: 20;
+  cursor: crosshair;
+  transition: border-color 0.12s, transform 0.12s, background 0.12s;
 }
 
-.pin-left {
-  left: -4px;
-}
-
-.pin-right {
-  right: -4px;
-}
-
-.comp-node:hover .pin,
-.comp-node.selected .pin {
+.pin:hover {
   border-color: var(--accent);
-  transform: scale(1.2);
+  background: color-mix(in srgb, var(--accent) 30%, #0f0f13);
+  transform: scale(1.4);
+}
+
+/* pin ที่ถูกเลือกเป็น pin แรก */
+.pin.pin-active {
+  border-color: #4a9eff;
+  background: #4a9eff44;
+  transform: scale(1.5);
+  animation: pinPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes pinPulse {
+  0%, 100% { box-shadow: 0 0 0 0 #4a9eff44; }
+  50% { box-shadow: 0 0 0 5px transparent; }
 }

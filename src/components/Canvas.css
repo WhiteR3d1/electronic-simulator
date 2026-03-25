@@ -6,11 +6,11 @@
   cursor: default;
 }
 
-.canvas-grid {
+.canvas-svg {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none;
+  pointer-events: all;
 }
 
 .empty-hint {
@@ -46,4 +46,29 @@
 @keyframes pulse {
   0%, 100% { opacity: 0.6; transform: translateX(0); }
   50% { opacity: 1; transform: translateX(-6px); }
+}
+
+/* Status bar ตอนกำลังต่อสาย */
+.wire-status {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a2a3a;
+  border: 1px solid #4a9eff44;
+  color: #4a9eff;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.wire-status kbd {
+  background: #0f1f2f;
+  border: 1px solid #4a9eff44;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-family: inherit;
 }
