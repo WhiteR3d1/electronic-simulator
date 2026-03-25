@@ -1,0 +1,49 @@
+.canvas {
+  flex: 1;
+  position: relative;
+  background: #0f0f13;
+  overflow: hidden;
+  cursor: default;
+}
+
+.canvas-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.empty-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hint-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 8px;
+  color: #2a2a3a;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.empty-hint p {
+  font-size: 14px;
+  color: #2e2e42;
+  font-weight: 500;
+}
+
+.hint-sub {
+  font-size: 12px !important;
+  color: #222235 !important;
+  margin-top: 4px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(-6px); }
+}

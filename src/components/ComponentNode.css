@@ -1,0 +1,87 @@
+.comp-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  z-index: 10;
+}
+
+.comp-node:active {
+  cursor: grabbing;
+  z-index: 20;
+}
+
+.comp-body {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  width: 100%;
+  background: #1c1c28;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+
+.comp-node.selected .comp-body {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.comp-node:hover .comp-body {
+  border-color: var(--accent);
+}
+
+.node-icon {
+  font-size: 13px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.node-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.node-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #d0d0e0;
+  white-space: nowrap;
+}
+
+.node-value {
+  font-size: 9px;
+  color: #555570;
+  white-space: nowrap;
+}
+
+/* Pin dots */
+.pin {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1c1c28;
+  border: 1.5px solid #444460;
+  position: absolute;
+  z-index: 2;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.pin-left {
+  left: -4px;
+}
+
+.pin-right {
+  right: -4px;
+}
+
+.comp-node:hover .pin,
+.comp-node.selected .pin {
+  border-color: var(--accent);
+  transform: scale(1.2);
+}

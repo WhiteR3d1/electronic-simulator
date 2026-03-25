@@ -1,0 +1,149 @@
+.sidebar {
+  width: 160px;
+  background: #16161e;
+  border-right: 1px solid #2a2a3a;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-section {
+  padding: 12px 10px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid #2a2a3a;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555570;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+
+.component-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.comp-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #2a2a3a;
+  background: #1c1c28;
+  cursor: grab;
+  user-select: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.comp-card:hover {
+  border-color: var(--accent);
+  background: #22223a;
+}
+
+.comp-card:active {
+  cursor: grabbing;
+  opacity: 0.7;
+}
+
+.comp-icon {
+  font-size: 14px;
+  color: var(--accent);
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.comp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.comp-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d0d0e0;
+}
+
+.comp-value {
+  font-size: 10px;
+  color: #555570;
+}
+
+.info-box {
+  background: #1c1c28;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-label {
+  font-size: 11px;
+  color: #555570;
+}
+
+.info-num {
+  font-size: 14px;
+  font-weight: 600;
+  color: #7c6ff7;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.btn {
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid #2a2a3a;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+  width: 100%;
+  text-align: left;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: #2a1a1e;
+  color: #ff4d6d;
+  border-color: #3a2028;
+}
+
+.btn-danger:not(:disabled):hover {
+  background: #3a2028;
+}
+
+.btn-clear {
+  background: #1c1c28;
+  color: #94a3b8;
+}
+
+.btn-clear:hover {
+  background: #22223a;
+}

@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f0f13;
+  color: #e2e2e2;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #16161e;
+  border-bottom: 1px solid #2a2a3a;
+  height: 48px;
+}
+
+.logo {
+  font-size: 16px;
+  font-weight: 600;
+  color: #7c6ff7;
+  letter-spacing: 0.03em;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #555570;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
