@@ -2,7 +2,7 @@
   "name": "circuit-sim",
   "private": true,
   "version": "0.0.0",
-  "homepage": "http://WhiteR3d1.github.io/electronic-simulator/",
+  "homepage": "http://whiter3d1.github.io/electronic-simulator/",
   "type": "module",
   "scripts": {
     "dev": "vite",
