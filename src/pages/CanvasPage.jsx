@@ -10,40 +10,49 @@ import CanvasHeader from '../components/CanvasHeader'
 import './CanvasPage.css'
 
 function CanvasPage() {
-  const navigate = useNavigate()
+  const navigate    = useNavigate()
   const { circuitId } = useParams()
-  const [user, setUser] = useState(null)
-  const { clearAll, addComponent, wires } = useCircuitStore()
+  const [user, setUser]         = useState(null)
+  const [circuitName, setCircuitName] = useState('Untitled Circuit')
+  const { loadCircuit, clearAll } = useCircuitStore()
 
+  // ติดตาม auth
   useEffect(() => {
     const unsub = watchAuthState(setUser)
     return unsub
   }, [])
 
-  // ถ้ามี circuitId ใน URL ให้โหลด circuit นั้น
-  // ใน useEffect ของ CanvasPage.jsx
+  // โหลด circuit จาก Firestore ถ้ามี circuitId ใน URL
   useEffect(() => {
-    if (!circuitId || !user) return;
+    if (!circuitId || !user) return
 
-    async function load() {
-      const circuits = await loadUserCircuits(user.uid);
-      const found = circuits.find(c => c.id === circuitId);
+    async function fetchCircuit() {
+      const circuits = await loadUserCircuits(user.uid)
+      const found = circuits.find(c => c.id === circuitId)
+      if (!found) return
 
-      if (found) {
-        // ส่งค่า found.name เข้าไปเป็น argument ตัวที่ 3 ครับ
-        useCircuitStore.getState().setCircuit(
-          found.components,
-          found.wires,
-          found.name // <--- เพิ่มตรงนี้
-        );
-      }
+      // ใช้ loadCircuit แทน addComponent วนซ้ำ
+      // เพื่อให้ id ของ component และ wire ตรงกัน
+      loadCircuit(found.components ?? [], found.wires ?? [])
+      setCircuitName(found.name ?? 'Untitled Circuit')
     }
-    load();
-  }, [circuitId, user]);
+
+    fetchCircuit()
+  }, [circuitId, user])
+
+  // ถ้าเปิดหน้าใหม่ (ไม่มี circuitId) ให้ล้าง canvas
+  useEffect(() => {
+    if (!circuitId) clearAll()
+  }, [circuitId])
 
   return (
     <div className="canvas-page">
-      <CanvasHeader user={user} circuitId={circuitId} />
+      <CanvasHeader
+        user={user}
+        circuitId={circuitId}
+        circuitName={circuitName}
+        setCircuitName={setCircuitName}
+      />
       <div className="workspace">
         <Sidebar />
         <Canvas />

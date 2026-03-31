@@ -4,26 +4,27 @@ import { saveCircuit, updateCircuit } from '../firebase/circuits'
 import useCircuitStore from '../store/circuitStore'
 import './CanvasHeader.css'
 
-function CanvasHeader({ user, circuitId }) {
+function CanvasHeader({ user, circuitId, circuitName, setCircuitName }) {
   const navigate = useNavigate()
   const { components, wires } = useCircuitStore()
-  const [saving, setSaving] = useState(false)
-  const [name, setName] = useState('Untitled Circuit')
-  const [saved, setSaved] = useState(false)
+  const [saving, setSaving]   = useState(false)
+  const [saved,  setSaved]    = useState(false)
 
   async function handleSave() {
     if (!user) { alert('Please login first'); return }
     setSaving(true)
     try {
       if (circuitId) {
-        await updateCircuit(circuitId, name, components, wires)
+        await updateCircuit(circuitId, circuitName, components, wires)
       } else {
-        await saveCircuit(user.uid, name, components, wires)
+        const newId = await saveCircuit(user.uid, circuitName, components, wires)
+        // อัปเดต URL ให้ตรงกับ id ใหม่
+        navigate(`/canvas/${newId}`, { replace: true })
       }
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch {
-      alert('Save failed')
+      alert('Save failed — check console')
     }
     setSaving(false)
   }
@@ -38,8 +39,8 @@ function CanvasHeader({ user, circuitId }) {
         <span className="ch-logo">⚡</span>
         <input
           className="ch-name-input"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          value={circuitName}
+          onChange={e => setCircuitName(e.target.value)}
           placeholder="Circuit name..."
           maxLength={40}
         />
