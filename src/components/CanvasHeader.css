@@ -1,0 +1,103 @@
+.canvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 48px;
+  background: #16161e;
+  border-bottom: 1px solid #2a2a3a;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.ch-back-btn {
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: 1px solid #2a2a3a;
+  background: transparent;
+  color: #888899;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ch-back-btn:hover {
+  background: #2a2a3a;
+  color: #d0d0e0;
+}
+
+.ch-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.ch-logo {
+  font-size: 18px;
+}
+
+.ch-name-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #2a2a3a;
+  color: #d0d0e0;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 6px;
+  outline: none;
+  width: 220px;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+
+.ch-name-input:focus {
+  border-bottom-color: #7c6ff7;
+}
+
+.ch-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ch-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #2a2a3a;
+}
+
+.ch-save-btn {
+  padding: 5px 14px;
+  border-radius: 7px;
+  border: 1px solid #7c6ff744;
+  background: #7c6ff722;
+  color: #7c6ff7;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ch-save-btn:hover:not(:disabled) {
+  background: #7c6ff744;
+}
+
+.ch-save-btn.saved {
+  background: #34d39922;
+  border-color: #34d39944;
+  color: #34d399;
+}
+
+.ch-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ch-not-login {
+  font-size: 11px;
+  color: #444455;
+}

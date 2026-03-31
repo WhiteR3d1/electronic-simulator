@@ -13,6 +13,18 @@
   pointer-events: all;
 }
 
+/* animation กระแสไฟไหลในสาย */
+.wire-animated {
+  animation: flowDash 0.6s linear infinite;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -26;
+  }
+}
+
+/* ── Empty hint ── */
 .empty-hint {
   position: absolute;
   top: 50%;
@@ -44,11 +56,79 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.6; transform: translateX(0); }
-  50% { opacity: 1; transform: translateX(-6px); }
+
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-6px);
+  }
 }
 
-/* Status bar ตอนกำลังต่อสาย */
+/* ── Simulation toolbar ── */
+.sim-toolbar {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sim-btn {
+  padding: 9px 24px;
+  border-radius: 20px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+
+.sim-btn:active {
+  transform: scale(0.97);
+}
+
+.sim-btn.run {
+  background: #7c6ff7;
+  color: #fff;
+  box-shadow: 0 4px 16px #7c6ff744;
+}
+
+.sim-btn.run:hover {
+  opacity: 0.9;
+}
+
+.sim-btn.stop {
+  background: #ff4d6d22;
+  color: #ff4d6d;
+  border: 1px solid #ff4d6d44;
+}
+
+.sim-btn.stop:hover {
+  background: #ff4d6d33;
+}
+
+/* ── Error message ── */
+.sim-error {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2a1015;
+  border: 1px solid #ff4d6d44;
+  color: #ff4d6d;
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ── Wire status ── */
 .wire-status {
   position: absolute;
   top: 12px;

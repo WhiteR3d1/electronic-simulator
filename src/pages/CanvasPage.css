@@ -1,0 +1,13 @@
+.canvas-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0f0f13;
+  overflow: hidden;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}

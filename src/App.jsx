@@ -1,19 +1,14 @@
-import Canvas from './components/Canvas'
-import Sidebar from './components/Sidebar'
-import './App.css'
+import { Routes, Route } from 'react-router-dom'
+import Homepage from './pages/Homepage'
+import CanvasPage from './pages/CanvasPage'
 
 function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <span className="logo">⚡ Circuit Sim</span>
-        <span className="subtitle">Electronic Simulator</span>
-      </header>
-      <div className="workspace">
-        <Sidebar />
-        <Canvas />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Homepage />} />
+      <Route path="/canvas" element={<CanvasPage />} />
+      <Route path="/canvas/:circuitId" element={<CanvasPage />} />
+    </Routes>
   )
 }
 
