@@ -4,18 +4,30 @@
   padding: 0;
 }
 
+html {
+  background: #0f0f13;
+}
+
 body {
-  font-family: 'Segoe UI', sans-serif;
   background: #0f0f13;
   color: #e2e2e2;
-  height: 100vh;
-  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  /* ไม่ใส่ overflow: hidden ที่ body
+     เพื่อให้ Homepage scroll ได้ปกติ */
+}
+
+#root {
+  min-height: 100vh;
+  background: #0f0f13;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #0f0f13;
 }
 
 .app-header {
@@ -26,6 +38,7 @@ body {
   background: #16161e;
   border-bottom: 1px solid #2a2a3a;
   height: 48px;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -43,5 +56,6 @@ body {
 .workspace {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  overflow: hidden; /* ให้ canvas และ panel scroll เองได้ภายใน */
+  min-height: 0;   /* สำคัญมาก: ป้องกัน flex children overflow */
 }
