@@ -24,7 +24,7 @@ export const COMPONENT_DEFS = {
     pins: [{ x: 0, y: 26 }, { x: 60, y: 26 }],
     props: [
       { key: 'color', label: 'Color', unit: '', type: 'select', options: ['Red', 'Green', 'Blue', 'Yellow'], default: 'Red' },
-      { key: 'forwardVoltage', label: 'Forward Voltage', unit: 'V', min: 1, max: 3.5, step: 0.1, default: 1.0 },
+      { key: 'forwardVoltage', label: 'Forward Voltage', unit: 'V', min: 1.5, max: 3.5, step: 0.1, default: 2.0 },
     ],
   },
   switch: {
@@ -138,12 +138,21 @@ const useCircuitStore = create((set, get) => ({
     set({ components, wires, selectedId: null, pendingPin: null, simResults: null, simRunning: false })
   },
 
-  updateProp: (id, key, value) => set((state) => ({
-    components: state.components.map(c =>
-      c.id === id ? { ...c, props: { ...c.props, [key]: value } } : c
-    ),
-    simResults: null, simRunning: false,
-  })),
+  updateProp: (id, key, value) => {
+    // อัปเดต props ก่อน
+    const wasRunning = get().simRunning
+    set((state) => ({
+      components: state.components.map(c =>
+        c.id === id ? { ...c, props: { ...c.props, [key]: value } } : c
+      ),
+    }))
+    // ถ้า simulation กำลังรันอยู่ → re-run ทันทีด้วยค่าใหม่
+    if (wasRunning) {
+      const { components, wires } = get()
+      const result = runSimulation(components, wires)
+      set({ simResults: result, simRunning: result.success })
+    }
+  },
 
   moveComponent: (id, x, y) => set((state) => {
     const comp = state.components.find(c => c.id === id)

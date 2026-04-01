@@ -27,17 +27,17 @@ export function runSimulation(components, wires) {
         const nodeList = [...new Set(Object.values(nodeMap))]
         const nodeCount = nodeList.length
 
-        if (nodeCount < 2) return { success: false, error: 'วงจรไม่ครบ — ต้องมีอย่างน้อย 2 node' }
+        if (nodeCount < 2) return { success: false, error: 'Incomplete circuit — must have at least 2 nodes' }
 
         const groundComp = components.find(c => c.type === 'ground')
-        if (!groundComp) return { success: false, error: 'ไม่มี Ground — ลาก Ground ลงใน canvas ด้วยนะครับ' }
+        if (!groundComp) return { success: false, error: 'No Ground — please drag a Ground onto the canvas' }
 
         const groundPinKey = `${groundComp.id}-0`
         const groundNode = nodeMap[groundPinKey]
-        if (groundNode === undefined) return { success: false, error: 'Ground ยังไม่ได้ต่อสาย' }
+        if (groundNode === undefined) return { success: false, error: 'Ground is not connected' }
 
         const battery = components.find(c => c.type === 'battery')
-        if (!battery) return { success: false, error: 'ไม่มี Battery — ลาก Battery ลงใน canvas ด้วยนะครับ' }
+        if (!battery) return { success: false, error: 'No Battery — please drag a Battery onto the canvas' }
 
         const nodeIndex = {}
         let idx = 0
@@ -47,7 +47,7 @@ export function runSimulation(components, wires) {
         nodeIndex[groundNode] = -1
 
         const n = nodeCount - 1
-        if (n <= 0) return { success: false, error: 'วงจรไม่ครบ' }
+        if (n <= 0) return { success: false, error: 'Incomplete circuit' }
 
         const G = Array.from({ length: n }, () => Array(n).fill(0))
         const I = Array(n).fill(0)
@@ -56,7 +56,7 @@ export function runSimulation(components, wires) {
         const battNeg = nodeMap[`${battery.id}-0`]
         const battPos = nodeMap[`${battery.id}-1`]
 
-        // ใส่ conductance ของแต่ละ component
+        // Add conductance for each component
         for (const comp of components) {
             if (comp.type === 'battery' || comp.type === 'ground') continue
             const def = COMPONENT_DEFS[comp.type]
@@ -79,7 +79,7 @@ export function runSimulation(components, wires) {
             }
         }
 
-        // ใส่ battery
+        // Add battery
         const internalR = 0.1
         const internalG = 1 / internalR
         if (battPos !== undefined && nodeIndex[battPos] >= 0) {
@@ -92,13 +92,13 @@ export function runSimulation(components, wires) {
             G[i][i] += internalG
         }
 
-        // แก้สมการ
+        // Solve equations
         let voltages
         try {
             const Vmat = multiply(inv(matrix(G)), matrix(I))
             voltages = Vmat.toArray ? Vmat.toArray() : Vmat
         } catch {
-            return { success: false, error: 'วงจรไม่สมบูรณ์ — ลองต่อสายให้ครบวงจรดูนะครับ' }
+            return { success: false, error: 'Incomplete circuit — try connecting wires to complete the circuit' }
         }
 
         const nodeVoltage = { [groundNode]: 0 }
@@ -106,7 +106,7 @@ export function runSimulation(components, wires) {
             if (i >= 0) nodeVoltage[node] = voltages[i] || 0
         }
 
-        // คำนวณผลของแต่ละ component
+        // Calculate results for each component
         const results = {}
         for (const comp of components) {
             if (comp.type === 'ground') {
@@ -146,7 +146,7 @@ export function runSimulation(components, wires) {
         return { success: true, nodeVoltage, results }
 
     } catch (err) {
-        return { success: false, error: 'เกิดข้อผิดพลาด: ' + err.message }
+        return { success: false, error: 'An error occurred: ' + err.message }
     }
 }
 
