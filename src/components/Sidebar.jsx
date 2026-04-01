@@ -2,12 +2,16 @@ import { COMPONENT_DEFS } from '../store/circuitStore'
 import useCircuitStore from '../store/circuitStore'
 import './Sidebar.css'
 
-const COMPONENT_LIST = Object.keys(COMPONENT_DEFS)
+const GROUPS = [
+  { label: 'Power',    types: ['battery', 'ground'] },
+  { label: 'Basic',   types: ['resistor', 'capacitor', 'potentiometer'] },
+  { label: 'Output',  types: ['led', 'buzzer'] },
+  { label: 'Active',  types: ['diode', 'transistor', 'switch'] },
+]
 
 function Sidebar() {
   const { components, deleteSelected, clearAll, selectedId } = useCircuitStore()
 
-  // เมื่อเริ่ม drag จาก sidebar
   const handleDragStart = (e, type) => {
     e.dataTransfer.setData('componentType', type)
     e.dataTransfer.effectAllowed = 'copy'
@@ -15,10 +19,10 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-section">
-        <p className="section-title">Components</p>
-        <div className="component-list">
-          {COMPONENT_LIST.map((type) => {
+      {GROUPS.map((group) => (
+        <div className="sidebar-group" key={group.label}>
+          <p className="group-title">{group.label}</p>
+          {group.types.map((type) => {
             const def = COMPONENT_DEFS[type]
             return (
               <div
@@ -29,37 +33,24 @@ function Sidebar() {
                 style={{ '--accent': def.color }}
               >
                 <span className="comp-icon">{def.icon}</span>
-                <div className="comp-info">
-                  <span className="comp-name">{def.label}</span>
-                  <span className="comp-value">{def.value}</span>
-                </div>
+                <span className="comp-name">{def.label}</span>
               </div>
             )
           })}
         </div>
-      </div>
+      ))}
 
-      <div className="sidebar-section sidebar-bottom">
-        <p className="section-title">Info</p>
+      <div className="sidebar-bottom">
         <div className="info-box">
-          <span className="info-row">
-            <span className="info-label">Components</span>
-            <span className="info-num">{components.length}</span>
-          </span>
+          <span className="info-label">On canvas</span>
+          <span className="info-num" style={{ color: '#7c6ff7' }}>{components.length}</span>
         </div>
-
-        <div className="action-buttons">
-          <button
-            className="btn btn-danger"
-            onClick={deleteSelected}
-            disabled={!selectedId}
-          >
-            🗑 Delete
-          </button>
-          <button className="btn btn-clear" onClick={clearAll}>
-            ✕ Clear All
-          </button>
-        </div>
+        <button className="btn btn-danger" onClick={deleteSelected} disabled={!selectedId}>
+          🗑 Delete
+        </button>
+        <button className="btn btn-clear" onClick={clearAll}>
+          ✕ Clear All
+        </button>
       </div>
     </aside>
   )

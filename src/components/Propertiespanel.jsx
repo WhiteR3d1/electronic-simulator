@@ -12,7 +12,6 @@ function PropertiesPanel() {
     const { components, selectedId, updateProp, deleteSelected, simResults, simRunning } = useCircuitStore()
     const comp = components.find(c => c.id === selectedId)
 
-    // ไม่มีอะไรถูกเลือก
     if (!comp) {
         return (
             <aside className="props-panel empty">
@@ -32,8 +31,13 @@ function PropertiesPanel() {
         : def.color
 
     return (
-        <aside className="props-panel" style={{ '--accent': accentColor }}>
-            {/* Header */}
+        <aside 
+            className="props-panel" 
+            style={{ '--accent': accentColor }}
+            // 🛡️ ป้องกันการคลิกใน Panel แล้วทะลุไปสั่ง Deselect ใน Canvas
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+        >
             <div className="props-header">
                 <div className="props-icon">{def.icon}</div>
                 <div>
@@ -56,31 +60,21 @@ function PropertiesPanel() {
                             <span className="sim-card-value">{simData.current}<span className="sim-unit">mA</span></span>
                         </div>
                     </div>
-                    {comp.type === 'led' && (
-                        <div className={`led-status ${simData.ledOn ? 'on' : 'off'}`}>
-                            <span className="led-status-dot" />
-                            {simData.ledOn ? 'LED is ON' : 'LED is OFF'}
-                        </div>
-                    )}
                 </div>
             )}
 
-            {/* Properties */}
-            {def.props.length > 0 && (
-                <div className="props-section">
-                    <p className="props-section-title">Properties</p>
-                    {def.props.map((prop) => (
-                        <PropField
-                            key={prop.key}
-                            prop={prop}
-                            value={comp.props?.[prop.key] ?? prop.default}
-                            onChange={(val) => updateProp(comp.id, prop.key, val)}
-                        />
-                    ))}
-                </div>
-            )}
+            <div className="props-section">
+                <p className="props-section-title">Properties</p>
+                {def.props.map((prop) => (
+                    <PropField
+                        key={prop.key}
+                        prop={prop}
+                        value={comp.props?.[prop.key] ?? prop.default}
+                        onChange={(val) => updateProp(comp.id, prop.key, val)}
+                    />
+                ))}
+            </div>
 
-            {/* Delete button */}
             <div className="props-footer">
                 <button className="props-delete-btn" onClick={deleteSelected}>
                     🗑 Delete component
@@ -90,7 +84,6 @@ function PropertiesPanel() {
     )
 }
 
-// แสดง field ตาม type ของ property
 function PropField({ prop, value, onChange }) {
     if (prop.type === 'toggle') {
         return (
@@ -98,7 +91,10 @@ function PropField({ prop, value, onChange }) {
                 <label className="prop-label">{prop.label}</label>
                 <button
                     className={`prop-toggle ${value ? 'on' : 'off'}`}
-                    onClick={() => onChange(!value)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onChange(!value);
+                    }}
                 >
                     {value ? 'Closed' : 'Open'}
                 </button>
@@ -115,8 +111,10 @@ function PropField({ prop, value, onChange }) {
                         <button
                             key={opt}
                             className={`prop-select-opt ${value === opt ? 'active' : ''}`}
-                            style={value === opt ? { '--opt-color': getLedColor(opt) } : {}}
-                            onClick={() => onChange(opt)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onChange(opt);
+                            }}
                         >
                             {opt}
                         </button>
@@ -126,9 +124,8 @@ function PropField({ prop, value, onChange }) {
         )
     }
 
-    // number slider
     return (
-        <div className="prop-row prop-row-input">
+        <div className="prop-row prop-row-input" onClick={(e) => e.stopPropagation()}>
             <label className="prop-label">{prop.label}</label>
             <div className="prop-input-wrapper">
                 <input
@@ -138,22 +135,22 @@ function PropField({ prop, value, onChange }) {
                     max={prop.max}
                     step={prop.step}
                     value={value}
-                    onChange={(e) => {
-                        const val = e.target.value === '' ? 0 : (prop.step < 1 ? parseFloat(e.target.value) : parseInt(e.target.value));
-                        onChange(val);
+                    // 🛠️ เปลี่ยนชื่อ parameter เป็น event เพื่อไม่ให้สับสนกับฟังก์ชัน onChange
+                    onChange={(event) => {
+                        const raw = event.target.value;
+                        const val = raw === '' ? 0 : (prop.step < 1 ? parseFloat(raw) : parseInt(raw));
+                        if (typeof onChange === 'function') {
+                            onChange(val);
+                        }
                     }}
+                    onFocus={(event) => event.target.select()}
+                    // 🛡️ ป้องกันปุ่มคีย์บอร์ดหลุดไปสั่งงาน Canvas (เช่น กด Delete แล้ววงจรหาย)
+                    onKeyDown={(event) => event.stopPropagation()}
                 />
                 <span className="prop-input-unit">{prop.unit}</span>
             </div>
-            <div className="prop-input-hint">
-                Min: {prop.min}{prop.unit} | Max: {prop.max}{prop.unit}
-            </div>
         </div>
     )
-}
-
-function getLedColor(name) {
-    return { Red: '#ff4d6d', Green: '#34d399', Blue: '#60a5fa', Yellow: '#fbbf24' }[name] ?? '#fff'
 }
 
 export default PropertiesPanel
