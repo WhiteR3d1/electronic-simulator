@@ -24,7 +24,7 @@ export const COMPONENT_DEFS = {
     pins: [{ x: 0, y: 26 }, { x: 60, y: 26 }],
     props: [
       { key: 'color', label: 'Color', unit: '', type: 'select', options: ['Red', 'Green', 'Blue', 'Yellow'], default: 'Red' },
-      { key: 'forwardVoltage', label: 'Forward Voltage', unit: 'V', min: 1.5, max: 3.5, step: 0.1, default: 2.0 },
+      { key: 'forwardVoltage', label: 'Forward Voltage', unit: 'V', min: 1, max: 3.5, step: 0.1, default: 1.0 },
     ],
   },
   switch: {

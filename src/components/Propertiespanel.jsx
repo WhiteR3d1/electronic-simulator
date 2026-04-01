@@ -9,7 +9,13 @@ const LED_COLORS = {
 }
 
 function PropertiesPanel() {
-    const { components, selectedId, updateProp, deleteSelected, simResults, simRunning } = useCircuitStore()
+    const components = useCircuitStore((state) => state.components)
+    const selectedId = useCircuitStore((state) => state.selectedId)
+    const updateProp = useCircuitStore((state) => state.updateProp)
+    const deleteSelected = useCircuitStore((state) => state.deleteSelected)
+    const simResults = useCircuitStore((state) => state.simResults)
+    const simRunning = useCircuitStore((state) => state.simRunning)
+
     const comp = components.find(c => c.id === selectedId)
 
     if (!comp) {
@@ -31,10 +37,9 @@ function PropertiesPanel() {
         : def.color
 
     return (
-        <aside 
-            className="props-panel" 
+        <aside
+            className="props-panel"
             style={{ '--accent': accentColor }}
-            // 🛡️ ป้องกันการคลิกใน Panel แล้วทะลุไปสั่ง Deselect ใน Canvas
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
         >
@@ -46,7 +51,6 @@ function PropertiesPanel() {
                 </div>
             </div>
 
-            {/* Simulation results */}
             {simRunning && simData && (
                 <div className="props-sim-results">
                     <p className="props-section-title">Simulation</p>
@@ -65,18 +69,24 @@ function PropertiesPanel() {
 
             <div className="props-section">
                 <p className="props-section-title">Properties</p>
-                {def.props.map((prop) => (
+                {def.props.map((prop, index) => (
                     <PropField
                         key={prop.key}
                         prop={prop}
                         value={comp.props?.[prop.key] ?? prop.default}
-                        onChange={(val) => updateProp(comp.id, prop.key, val)}
+                        // 🛠️ autoFocus field แรกเมื่อเลือก Component
+                        autoFocus={index === 0}
+                        onChange={(val) => {
+                            if (typeof updateProp === 'function') {
+                                updateProp(comp.id, prop.key, val);
+                            }
+                        }}
                     />
                 ))}
             </div>
 
             <div className="props-footer">
-                <button className="props-delete-btn" onClick={deleteSelected}>
+                <button className="props-delete-btn" onClick={() => deleteSelected?.()}>
                     🗑 Delete component
                 </button>
             </div>
@@ -84,7 +94,7 @@ function PropertiesPanel() {
     )
 }
 
-function PropField({ prop, value, onChange }) {
+function PropField({ prop, value, onChange, autoFocus }) {
     if (prop.type === 'toggle') {
         return (
             <div className="prop-row">
@@ -93,7 +103,7 @@ function PropField({ prop, value, onChange }) {
                     className={`prop-toggle ${value ? 'on' : 'off'}`}
                     onClick={(e) => {
                         e.stopPropagation();
-                        onChange(!value);
+                        onChange?.(!value);
                     }}
                 >
                     {value ? 'Closed' : 'Open'}
@@ -113,7 +123,7 @@ function PropField({ prop, value, onChange }) {
                             className={`prop-select-opt ${value === opt ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onChange(opt);
+                                onChange?.(opt);
                             }}
                         >
                             {opt}
@@ -135,20 +145,22 @@ function PropField({ prop, value, onChange }) {
                     max={prop.max}
                     step={prop.step}
                     value={value}
-                    // 🛠️ เปลี่ยนชื่อ parameter เป็น event เพื่อไม่ให้สับสนกับฟังก์ชัน onChange
+                    // 🛠️ autoFocus: เมื่อเลือก Component ใหม่ field แรกจะ focus ทันที พิมพ์ได้เลย
+                    autoFocus={autoFocus}
                     onChange={(event) => {
                         const raw = event.target.value;
-                        const val = raw === '' ? 0 : (prop.step < 1 ? parseFloat(raw) : parseInt(raw));
+                        const val = raw === '' ? 0 : Number(raw);
                         if (typeof onChange === 'function') {
                             onChange(val);
                         }
                     }}
+                    // 🛠️ select all เมื่อ focus เพื่อพิมพ์ทับค่าเดิมได้เลย
                     onFocus={(event) => event.target.select()}
-                    // 🛡️ ป้องกันปุ่มคีย์บอร์ดหลุดไปสั่งงาน Canvas (เช่น กด Delete แล้ววงจรหาย)
                     onKeyDown={(event) => event.stopPropagation()}
                 />
                 <span className="prop-input-unit">{prop.unit}</span>
             </div>
+            <p className="prop-input-hint">{prop.min} – {prop.max} {prop.unit}</p>
         </div>
     )
 }

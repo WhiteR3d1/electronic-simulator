@@ -5,7 +5,7 @@ import { loadUserCircuits } from '../firebase/circuits'
 import useCircuitStore from '../store/circuitStore'
 import Canvas from '../components/Canvas'
 import Sidebar from '../components/Sidebar'
-import PropertiesPanel from '../components/PropertiesPanel'
+import PropertiesPanel from '../components/Propertiespanel'
 import CanvasHeader from '../components/CanvasHeader'
 import './CanvasPage.css'
 

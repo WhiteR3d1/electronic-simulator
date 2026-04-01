@@ -34,9 +34,9 @@ function Canvas() {
 
   const handleDragOver = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy' }
 
+  // 🛠️ FIX: ตรวจสอบว่า click โดนพื้นหลัง Canvas จริงๆ ไม่ใช่ Component
   const handleCanvasClick = (e) => {
-    const tag = e.target.tagName
-    if (e.target === canvasRef.current || tag === 'svg' || tag === 'rect' || tag === 'line') {
+    if (e.target === canvasRef.current) {
       selectComponent(null)
       cancelWire()
     }
@@ -51,19 +51,41 @@ function Canvas() {
       onClick={handleCanvasClick}
       onMouseMove={handleMouseMove}
     >
-      <svg className="canvas-svg" width="100%" height="100%">
+      {/* 🛠️ FIX: แยก SVG layer ออกเป็น 2 ชั้น
+          - grid layer: pointer-events none ไม่บัง Component
+          - wire layer: pointer-events all สำหรับ click wire */}
+
+      {/* Layer 1: Grid (ไม่รับ event) */}
+      <svg
+        className="canvas-svg"
+        width="100%"
+        height="100%"
+        style={{ pointerEvents: 'none' }}
+      >
         <defs>
           <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a26" strokeWidth="0.5" />
           </pattern>
         </defs>
-        <rect className="canvas-grid-svg" width="100%" height="100%" fill="url(#grid)" />
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
 
-        {/* Wires */}
+      {/* Components — อยู่ระหว่าง 2 SVG layer */}
+      {components.map((comp) => (
+        <ComponentNode key={comp.id} comp={comp} />
+      ))}
+
+      {/* Layer 2: Wires (รับ event เฉพาะ wire) */}
+      <svg
+        className="canvas-svg"
+        width="100%"
+        height="100%"
+        style={{ pointerEvents: 'none' }}
+      >
         {wires.map((w) => {
-          const isLive = simRunning  // สายที่มีกระแสไหล
+          const isLive = simRunning
           return (
-            <g key={w.id}>
+            <g key={w.id} style={{ pointerEvents: 'all' }}>
               {/* click area */}
               <line
                 x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2}
@@ -103,11 +125,6 @@ function Canvas() {
           />
         )}
       </svg>
-
-      {/* Components */}
-      {components.map((comp) => (
-        <ComponentNode key={comp.id} comp={comp} />
-      ))}
 
       {components.length === 0 && (
         <div className="empty-hint">
