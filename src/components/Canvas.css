@@ -8,8 +8,7 @@
 
 .canvas-svg {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   pointer-events: all;
 }
 
@@ -19,16 +18,13 @@
 }
 
 @keyframes flowDash {
-  to {
-    stroke-dashoffset: -26;
-  }
+  to { stroke-dashoffset: -26; }
 }
 
 /* ── Empty hint ── */
 .empty-hint {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
@@ -43,30 +39,12 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-.empty-hint p {
-  font-size: 14px;
-  color: #2e2e42;
-  font-weight: 500;
-}
-
-.hint-sub {
-  font-size: 12px !important;
-  color: #222235 !important;
-  margin-top: 4px;
-}
+.empty-hint p { font-size: 14px; color: #2e2e42; font-weight: 500; }
+.hint-sub { font-size: 12px !important; color: #222235 !important; margin-top: 4px; }
 
 @keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: translateX(0);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateX(-6px);
-  }
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(-6px); }
 }
 
 /* ── Simulation toolbar ── */
@@ -88,9 +66,7 @@
   letter-spacing: 0.02em;
 }
 
-.sim-btn:active {
-  transform: scale(0.97);
-}
+.sim-btn:active { transform: scale(0.97); }
 
 .sim-btn.run {
   background: #7c6ff7;
@@ -98,9 +74,7 @@
   box-shadow: 0 4px 16px #7c6ff744;
 }
 
-.sim-btn.run:hover {
-  opacity: 0.9;
-}
+.sim-btn.run:hover { opacity: 0.9; }
 
 .sim-btn.stop {
   background: #ff4d6d22;
@@ -108,9 +82,7 @@
   border: 1px solid #ff4d6d44;
 }
 
-.sim-btn.stop:hover {
-  background: #ff4d6d33;
-}
+.sim-btn.stop:hover { background: #ff4d6d33; }
 
 /* ── Error message ── */
 .sim-error {
@@ -131,8 +103,7 @@
 /* ── Wire status ── */
 .wire-status {
   position: absolute;
-  top: 12px;
-  left: 50%;
+  top: 12px; left: 50%;
   transform: translateX(-50%);
   background: #1a2a3a;
   border: 1px solid #4a9eff44;
@@ -151,4 +122,63 @@
   padding: 1px 5px;
   font-size: 11px;
   font-family: inherit;
+}
+
+/* ── Keyboard hints ── */
+.key-hints {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.key-hint {
+  background: #16161e;
+  border: 1px solid #2a2a3a;
+  color: #888899;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.key-hint kbd {
+  background: #2a2a3a;
+  border: 1px solid #3a3a4a;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: inherit;
+  color: #d0d0e0;
+}
+
+/* ── Delete hint ── */
+.delete-hint {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1015;
+  border: 1px solid #ff4d6d33;
+  color: #ff4d6d99;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.delete-hint kbd {
+  background: #2a1018;
+  border: 1px solid #ff4d6d44;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: inherit;
+  color: #ff4d6d;
 }
